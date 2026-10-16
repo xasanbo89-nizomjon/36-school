@@ -7,7 +7,7 @@ service cloud.firestore {
        YORDAMCHI FUNKSIYALAR
        Rol har doim users/{uid} hujjatidan olinadi (hujjat ID = Auth uid).
        Hujjat yo'q yoki rol noma'lum bo'lsa — "guest": hech narsa qila olmaydi.
-       Foydalanuvchi hisoblarini server.js (Firebase Admin) yaratadi.
+       Foydalanuvchi hisoblarini lib/api-app.js (Firebase Admin) yaratadi.
        ========================= */
 
     function signedIn() {

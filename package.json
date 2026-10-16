@@ -8,8 +8,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "start": "node server.js",
-    "dev": "node --watch server.js",
+    "start": "node local-server.js",
+    "dev": "node --watch local-server.js",
     "migrate:users": "node scripts/migrate-users.js",
     "set-role": "node scripts/set-role.js"
   },

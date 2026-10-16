@@ -5,7 +5,10 @@ Maktab boshqaruv platformasi (elektron jurnal, kundalik, dars jadvali): vanilla 
 ## Tuzilma
 
 ```
-server.js              Express: /public static + /api/users (Firebase Admin: hisob yaratish, parol, o'chirish)
+lib/api-app.js         Express API: /api/users, /api/health (Firebase Admin: hisob yaratish, parol, o'chirish)
+api/index.js           Vercel funksiyasi: lib/api-app.js ni eksport qiladi
+local-server.js        faqat lokal: API + public/ static (npm start)
+vercel.json            Vercel sozlamasi: outputDirectory=public, /api/* -> api/index, xavfsizlik header'lari
 public/
   index.html           login + ilova (SVG ikonka sprite shu yerda)
   style.css            dizayn tizimi: CSS o'zgaruvchilar, yorug'/qorong'i tema, responsive
@@ -88,7 +91,7 @@ Rol yo'q yoki noma'lum bo'lsa — **guest**: hech narsa o'qiy/yoza olmaydi.
 | Vazifa qo'shish | ✅ | ✅ | ✅ | ✅ | | |
 | Galereya | ✅ | ✅ | | | | |
 
-Hisoblarni faqat server (`server.js`, Firebase Admin) yaratadi: u ID tokenni tekshiradi va rolni Firestore'dan o'qiydi.
+Hisoblarni faqat server (`lib/api-app.js`, Firebase Admin) yaratadi: u ID tokenni tekshiradi va rolni Firestore'dan o'qiydi.
 Hech kim o'z rolini o'zgartira olmaydi.
 
 ### O'quvchilar login bilan kiradi
@@ -131,22 +134,24 @@ node scripts/migrate-users.js --apply --delete-old  # tekshirib bo'lgach, eskila
 
 ## Xavfsizlik
 
-- Static faqat `public/` dan beriladi — `.env`, `server.js` ochiq emas.
+- Static faqat `public/` dan beriladi — `.env`, `lib/api-app.js` ochiq emas.
 - Firestore/Storage rules rol bo'yicha server tomonda tekshiradi; jurnal yozuvining ID'si va maydonlari ham tekshiriladi.
 - `/api/users`: ID token + rol tekshiruvi, rate limit, CORS faqat `ALLOWED_ORIGINS` uchun.
 - Firestore'dan kelgan matn `innerHTML` orqali qo'yilmaydi; galereya rasmlari faqat `https://`.
 - Firebase Console → Authentication → Settings → **User actions → "Enable create (sign-up)"** o'chirilgan bo'lsin
   (hisoblarni faqat server yaratadi, server Admin SDK ishlatgani uchun bu unga ta'sir qilmaydi).
 
-## Render'ga deploy
+## Vercel'ga deploy
 
-1. Render → **New → Web Service** → shu repozitoriyani ulang.
-2. Build command: `npm install`; Start command: `npm start`.
-3. **Environment**: `FIREBASE_SERVICE_ACCOUNT` (JSON, bitta qatorda), `LOGIN_DOMAIN=36-school.uz`, `ALLOWED_ORIGINS`.
-   Eski `GEMINI_API_KEY` ni o'chiring.
-4. Deploy qiling. Tekshirish: `/healthz` → `{"ok":true,"admin":true}` (`admin:false` bo'lsa, service account noto'g'ri).
-5. Sayt Render'dan boshqa joyda turgan bo'lsa: `public/js/config.js` dagi `API_BASE` ga Render manzilini yozing.
-6. Firebase Console → Authentication → Settings → **Authorized domains** ga `36-school.uz` qo'shilganini tekshiring.
+1. Vercel → **Add New → Project** → shu repozitoriyani ulang.
+2. **Framework Preset = Other** (`vercel.json` build'siz `public/` ni beradi, `/api/*` ni `api/index.js` funksiyasiga yo'naltiradi).
+3. **Environment Variables**:
+   - `FIREBASE_SERVICE_ACCOUNT` — service account JSON (bitta qatorda)
+   - `LOGIN_DOMAIN=36-school.uz`
+   - `ALLOWED_ORIGINS=https://36-school.uz,https://www.36-school.uz,https://36-school.vercel.app`
+4. O'zgaruvchilarni o'zgartirgach **Redeploy** qiling (eski deploy yangi qiymatlarni ko'rmaydi).
+5. Tekshirish: `/api/health` → `{"ok":true,"admin":true}` (`admin:false` bo'lsa, service account noto'g'ri).
+6. Firebase Console → Authentication → Settings → **Authorized domains** ga `36-school.vercel.app` va `36-school.uz` qo'shing.
 
 ## Firebase SDK versiyasi
 
