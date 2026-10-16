@@ -148,10 +148,25 @@ node scripts/migrate-users.js --apply --delete-old  # tekshirib bo'lgach, eskila
 3. **Environment Variables**:
    - `FIREBASE_SERVICE_ACCOUNT` — service account JSON (bitta qatorda)
    - `LOGIN_DOMAIN=36-school.uz`
-   - `ALLOWED_ORIGINS=https://36-school.uz,https://www.36-school.uz,https://36-school.vercel.app`
+   - `ALLOWED_ORIGINS=https://36-school.uz,https://www.36-school.uz,https://school-system-54307.web.app,https://school-system-54307.firebaseapp.com,https://36-school.vercel.app`
 4. O'zgaruvchilarni o'zgartirgach **Redeploy** qiling (eski deploy yangi qiymatlarni ko'rmaydi).
 5. Tekshirish: `/api/health` → `{"ok":true,"admin":true}` (`admin:false` bo'lsa, service account noto'g'ri).
 6. Firebase Console → Authentication → Settings → **Authorized domains** ga `36-school.vercel.app` va `36-school.uz` qo'shing.
+
+## Firebase Hosting'ga deploy
+
+Sayt (`public/`) **Firebase Hosting**'da (36-school.uz), API (`/api/*`) esa **Vercel**'da (36-school.vercel.app) turadi.
+Brauzer saytni Firebase'dan oladi, `public/js/config.js` dagi `API_BASE` esa API so'rovlarini Vercel'ga yuboradi
+(localhost'da `API_BASE` bo'sh — lokal server ishlaydi). Shuning uchun Vercel'dagi `ALLOWED_ORIGINS` ga sayt manzillari kiritilgan bo'lishi shart (CORS).
+
+```bash
+npm i -g firebase-tools
+firebase login
+firebase deploy --only hosting     # faqat sayt (public/)
+```
+
+`firebase.json` dagi `hosting` bo'limi `public/` ni beradi, `.firebaserc` loyihani (`school-system-54307`) belgilaydi.
+Domen `36-school.uz` Firebase Console → Hosting → **Add custom domain** orqali ulanadi.
 
 ## Firebase SDK versiyasi
 

@@ -11,10 +11,10 @@ export const FIREBASE_CONFIG = {
 };
 
 /*
- Server API manzili. Sayt va server bitta joyda (Render) bo'lsa — bo'sh qoldiring.
- Sayt boshqa joyda bo'lsa, masalan: "https://three6-school-system.onrender.com"
+ Server API manzili. Sayt Firebase Hosting'da (36-school.uz), API Vercel'da turadi.
+ Lokal (localhost) da sayt va API bitta serverdan beriladi — bo'sh.
 */
-export const API_BASE = "";
+export const API_BASE = ["localhost", "127.0.0.1"].includes(location.hostname) ? "" : "https://36-school.vercel.app";
 
 /*
  Emaili yo'q o'quvchilar "login" bilan kiradi: "ali.valiyev" -> "ali.valiyev@36-school.uz".
