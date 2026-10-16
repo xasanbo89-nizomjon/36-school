@@ -1,0 +1,37 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    /* Rol Firestore'dagi users/{uid} hujjatidan olinadi (firestore.rules bilan bir xil mantiq) */
+
+    function role() {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/users/$(request.auth.uid))
+        ? firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.get('role', 'guest')
+        : 'guest';
+    }
+
+    function knownRole() {
+      return role() in ['superadmin', 'director', 'deputy', 'teacher', 'student', 'parent'];
+    }
+
+    function isAdmin() {
+      return role() in ['superadmin', 'director'];
+    }
+
+    /* Galereya rasmlari: o'qish — rolli foydalanuvchilar; yuklash/o'chirish — superadmin, director */
+    match /gallery/{fileName} {
+      allow read: if knownRole();
+      allow create, update: if isAdmin()
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp|gif)');
+      allow delete: if isAdmin();
+    }
+
+    /* Boshqa hamma yo'llar — taqiqlangan */
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

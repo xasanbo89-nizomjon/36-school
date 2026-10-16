@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="uz" data-theme="light">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<title>36 School</title>
+
+<script src="js/theme-init.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+
+<!-- IKONKALAR (SVG sprite) -->
+<svg xmlns="http://www.w3.org/2000/svg" class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="logoGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1d4ed8"/>
+      <stop offset="1" stop-color="#0ea5e9"/>
+    </linearGradient>
+  </defs>
+  <symbol id="i-logo" viewBox="0 0 40 40">
+    <rect width="40" height="40" rx="11" fill="url(#logoGradient)"/>
+    <path d="M20 9 6 16.5l14 7.5 14-7.5z" fill="#fff"/>
+    <path d="M11.5 22v5.5c0 1.9 3.8 4.5 8.5 4.5s8.5-2.6 8.5-4.5V22L20 26.5z" fill="#fff" fill-opacity=".85"/>
+    <path d="M34 17v8" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-dashboard" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></symbol>
+  <symbol id="i-classes" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="i-attendance" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/><path d="m9 16 2 2 4-4"/></symbol>
+  <symbol id="i-homework" viewBox="0 0 24 24"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></symbol>
+  <symbol id="i-gallery" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></symbol>
+  <symbol id="i-chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="i-chevrons-left" viewBox="0 0 24 24"><path d="m11 17-5-5 5-5M18 17l-5-5 5-5"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 24 24"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 19c-6.5 0-10-7-10-7a18.5 18.5 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 5c6.5 0 10 7 10 7a18.5 18.5 0 0 1-2.16 3.19M14.12 14.12a3 3 0 1 1-4.24-4.24"/><path d="m2 2 20 20"/></symbol>
+  <symbol id="i-mail" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 6L2 7"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+  <symbol id="i-log-out" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-inbox" viewBox="0 0 24 24"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="m12 3 1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M19 15v4M17 17h4"/></symbol>
+  <symbol id="i-journal" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/><path d="M9 7h7M9 11h5"/></symbol>
+  <symbol id="i-diary" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4z"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></symbol>
+  <symbol id="i-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z"/></symbol>
+  <symbol id="i-key" viewBox="0 0 24 24"><circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6M15.5 7.5l3 3L22 7l-3-3"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></symbol>
+</svg>
+
+<!-- SPLASH: autentifikatsiya holati aniqlanguncha -->
+<div id="splash" class="splash" role="status">
+  <svg class="logo logo-lg"><use href="#i-logo"/></svg>
+  <span class="spinner" aria-hidden="true"></span>
+</div>
+
+<!-- LOGIN -->
+<div id="loginPage" class="auth" hidden>
+
+  <aside class="auth-hero">
+    <div class="auth-hero-inner">
+      <div class="brand brand-light">
+        <svg class="logo"><use href="#i-logo"/></svg>
+        <span class="brand-name">36 School</span>
+      </div>
+
+      <div class="auth-hero-body">
+        <h2 data-i18n="login.hero.title">Maktab hayoti — bitta platformada</h2>
+        <p data-i18n="login.hero.text">Sinflar, davomat, vazifalar va galereya — o'qituvchilar, o'quvchilar va ota-onalar uchun qulay va xavfsiz.</p>
+
+        <ul class="feature-list">
+          <li><span class="feature-icon"><svg class="icon"><use href="#i-attendance"/></svg></span><span data-i18n="login.feature.attendance">Davomat va natijalar nazorati</span></li>
+          <li><span class="feature-icon"><svg class="icon"><use href="#i-homework"/></svg></span><span data-i18n="login.feature.homework">Vazifalar va sinflar boshqaruvi</span></li>
+          <li><span class="feature-icon"><svg class="icon"><use href="#i-gallery"/></svg></span><span data-i18n="login.feature.gallery">Maktab galereyasi va yangiliklari</span></li>
+        </ul>
+      </div>
+
+      <p class="auth-hero-footer" data-i18n="login.footer">© 36 School. Barcha huquqlar himoyalangan.</p>
+    </div>
+    <span class="shape shape-1" aria-hidden="true"></span>
+    <span class="shape shape-2" aria-hidden="true"></span>
+    <span class="shape shape-3" aria-hidden="true"></span>
+  </aside>
+
+  <main class="auth-panel">
+    <div class="auth-tools">
+      <select class="select js-lang-select" data-i18n-title="topbar.language" title="Til" aria-label="Til">
+        <option value="uz">O'zbekcha</option>
+        <option value="ru">Русский</option>
+        <option value="en">English</option>
+      </select>
+      <button type="button" class="icon-btn js-theme-toggle" data-i18n-title="topbar.theme" title="Mavzuni almashtirish" aria-label="Mavzuni almashtirish">
+        <svg class="icon icon-sun"><use href="#i-sun"/></svg>
+        <svg class="icon icon-moon"><use href="#i-moon"/></svg>
+      </button>
+    </div>
+
+    <div class="auth-card">
+      <div class="brand brand-compact">
+        <svg class="logo"><use href="#i-logo"/></svg>
+        <span class="brand-name">36 School</span>
+      </div>
+
+      <h1 class="auth-title" data-i18n="login.welcome">Xush kelibsiz!</h1>
+      <p class="auth-subtitle" data-i18n="login.subtitle">Davom etish uchun hisobingizga kiring</p>
+
+      <form id="loginForm" class="form" novalidate>
+        <div id="loginError" class="form-alert" role="alert" hidden>
+          <svg class="icon"><use href="#i-alert"/></svg>
+          <span id="loginErrorText"></span>
+        </div>
+
+        <div class="field">
+          <label class="label" for="emailInput" data-i18n="login.identity">Login yoki email</label>
+          <div class="input-wrap">
+            <svg class="icon input-icon"><use href="#i-user"/></svg>
+            <input class="input input-with-icon" type="text" id="emailInput" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" aria-describedby="emailError">
+          </div>
+          <p class="field-error" id="emailError" hidden></p>
+        </div>
+
+        <div class="field">
+          <label class="label" for="passwordInput" data-i18n="login.password">Parol</label>
+          <div class="input-wrap">
+            <svg class="icon input-icon"><use href="#i-lock"/></svg>
+            <input class="input input-with-icon input-with-action" type="password" id="passwordInput" name="password" autocomplete="current-password" aria-describedby="passwordError">
+            <button type="button" id="togglePassword" class="icon-btn input-action" aria-pressed="false" data-i18n-title="login.showPassword" title="Parolni ko'rsatish" aria-label="Parolni ko'rsatish">
+              <svg class="icon"><use href="#i-eye"/></svg>
+            </button>
+          </div>
+          <p class="field-error" id="passwordError" hidden></p>
+        </div>
+
+        <div class="form-row">
+          <label class="checkbox">
+            <input type="checkbox" id="rememberMe" checked>
+            <span data-i18n="login.remember">Meni eslab qol</span>
+          </label>
+          <button type="button" id="forgotBtn" class="link-btn" data-i18n="login.forgot">Parolni unutdingizmi?</button>
+        </div>
+
+        <button type="submit" id="loginBtn" class="btn btn-primary btn-lg btn-block">
+          <span id="loginBtnLabel" data-i18n="login.button">Kirish</span>
+        </button>
+      </form>
+    </div>
+  </main>
+</div>
+
+<!-- APP -->
+<div id="app" class="app" hidden>
+
+  <header class="topbar">
+    <div class="brand">
+      <svg class="logo"><use href="#i-logo"/></svg>
+      <span class="brand-name">36 School</span>
+    </div>
+
+    <div class="topbar-actions">
+      <select class="select js-lang-select" data-i18n-title="topbar.language" title="Til" aria-label="Til">
+        <option value="uz">O'zbekcha</option>
+        <option value="ru">Русский</option>
+        <option value="en">English</option>
+      </select>
+
+      <button type="button" class="icon-btn js-theme-toggle" data-i18n-title="topbar.theme" title="Mavzuni almashtirish" aria-label="Mavzuni almashtirish">
+        <svg class="icon icon-sun"><use href="#i-sun"/></svg>
+        <svg class="icon icon-moon"><use href="#i-moon"/></svg>
+      </button>
+
+      <div class="profile">
+        <button type="button" id="profileBtn" class="profile-btn" aria-haspopup="menu" aria-expanded="false" aria-controls="profileMenu" data-i18n-title="topbar.profile" title="Profil menyusi" aria-label="Profil menyusi">
+          <span class="avatar" id="profileAvatar">?</span>
+          <span class="profile-meta">
+            <span class="profile-name" id="welcomeUser">...</span>
+            <span class="profile-role" id="roleText" data-i18n="role.guest">Mehmon</span>
+          </span>
+          <svg class="icon icon-sm profile-chevron"><use href="#i-chevron-down"/></svg>
+        </button>
+
+        <div class="dropdown" id="profileMenu" role="menu" hidden>
+          <div class="dropdown-head">
+            <span class="avatar avatar-lg" id="profileAvatarLarge">?</span>
+            <div class="dropdown-id">
+              <span class="profile-email" id="profileEmail"></span>
+              <div class="badge-row">
+                <span class="badge badge-role" id="roleBadge" data-i18n="role.guest">Mehmon</span>
+                <span class="badge badge-free" id="planBadge" data-i18n="plan.free">FREE</span>
+              </div>
+            </div>
+          </div>
+          <button type="button" id="upgradeBtn" class="btn btn-upgrade btn-block" role="menuitem">
+            <svg class="icon"><use href="#i-sparkles"/></svg>
+            <span data-i18n="plan.upgrade">PRO ga o'tish</span>
+          </button>
+          <button type="button" id="logoutBtn" class="menu-item" role="menuitem">
+            <svg class="icon"><use href="#i-log-out"/></svg>
+            <span data-i18n="nav.logout">Chiqish</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar" id="sidebar">
+      <nav id="sidebarNav" class="nav" data-i18n-aria="nav.main" aria-label="Asosiy menyu"></nav>
+      <button type="button" id="sidebarToggle" class="sidebar-toggle" aria-expanded="true" data-i18n-title="nav.collapse" title="Menyuni yig'ish" aria-label="Menyuni yig'ish">
+        <svg class="icon"><use href="#i-chevrons-left"/></svg>
+      </button>
+    </aside>
+
+    <main class="content">
+
+      <!-- GUEST (rol berilmagan) -->
+      <section id="guestNotice" class="card guest-card" hidden>
+        <div class="empty-icon"><svg class="icon icon-lg"><use href="#i-lock"/></svg></div>
+        <h1 class="page-title" data-i18n="guest.title">Rol biriktirilmagan</h1>
+        <p class="guest-text" data-i18n="guest.notice"></p>
+      </section>
+
+      <!-- DASHBOARD (rolga qarab: maktab statistikasi yoki shaxsiy sahifa) -->
+      <section id="dashboardSection" hidden>
+        <div id="dashboardContainer"></div>
+      </section>
+
+      <!-- ELEKTRON JURNAL -->
+      <section id="journalSection" hidden>
+        <div class="page-header">
+          <div>
+            <h1 class="page-title" data-i18n="journal.title">Elektron jurnal</h1>
+            <p class="page-subtitle" data-i18n="journal.subtitle">Baho va davomatni belgilang</p>
+          </div>
+        </div>
+        <div id="journalContainer"></div>
+      </section>
+
+      <!-- KUNDALIK -->
+      <section id="diarySection" hidden>
+        <div class="page-header">
+          <h1 class="page-title" data-i18n="diary.title">Kundalik</h1>
+        </div>
+        <div id="diaryContainer"></div>
+      </section>
+
+      <!-- DARS JADVALI -->
+      <section id="scheduleSection" hidden>
+        <div class="page-header">
+          <h1 class="page-title" data-i18n="schedule.title">Dars jadvali</h1>
+        </div>
+        <div id="scheduleContainer"></div>
+      </section>
+
+      <!-- VAZIFALAR -->
+      <section id="homeworkSection" hidden>
+        <div class="page-header">
+          <h1 class="page-title" data-i18n="homework.title">Vazifalar</h1>
+          <button type="button" id="addHomeworkBtn" class="btn btn-primary" hidden>
+            <svg class="icon"><use href="#i-plus"/></svg><span data-i18n="homework.add">Qo'shish</span>
+          </button>
+        </div>
+        <div id="homeworkContainer"></div>
+      </section>
+
+      <!-- SINFLAR -->
+      <section id="classesSection" hidden>
+        <div class="page-header">
+          <h1 class="page-title" data-i18n="classes.title">Sinflar</h1>
+          <button type="button" id="addClassBtn" class="btn btn-primary" hidden>
+            <svg class="icon"><use href="#i-plus"/></svg><span data-i18n="classes.add">Qo'shish</span>
+          </button>
+        </div>
+        <div id="classesContainer" class="card-grid"></div>
+      </section>
+
+      <!-- FOYDALANUVCHILAR -->
+      <section id="usersSection" hidden>
+        <div class="page-header">
+          <div>
+            <h1 class="page-title" data-i18n="users.title">Foydalanuvchilar</h1>
+            <p class="page-subtitle" data-i18n="users.subtitle">O'quvchi, o'qituvchi va ota-onalar hisoblari</p>
+          </div>
+          <div class="header-actions">
+            <button type="button" id="bulkUserBtn" class="btn btn-secondary" hidden>
+              <svg class="icon"><use href="#i-upload"/></svg><span data-i18n="users.bulk.button">Ro'yxat bilan qo'shish</span>
+            </button>
+            <button type="button" id="addUserBtn" class="btn btn-primary" hidden>
+              <svg class="icon"><use href="#i-plus"/></svg><span data-i18n="users.add">Qo'shish</span>
+            </button>
+          </div>
+        </div>
+        <div id="usersContainer"></div>
+      </section>
+
+      <!-- FANLAR -->
+      <section id="subjectsSection" hidden>
+        <div class="page-header">
+          <h1 class="page-title" data-i18n="subjects.title">Fanlar</h1>
+          <button type="button" id="addSubjectBtn" class="btn btn-primary" hidden>
+            <svg class="icon"><use href="#i-plus"/></svg><span data-i18n="subjects.add">Qo'shish</span>
+          </button>
+        </div>
+        <div id="subjectsContainer"></div>
+      </section>
+
+      <!-- GALLERY -->
+      <section id="gallerySection" hidden>
+        <div class="page-header">
+          <h1 class="page-title" data-i18n="gallery.title">Maktab galereyasi</h1>
+          <button type="button" id="addGalleryBtn" class="btn btn-primary" hidden>
+            <svg class="icon"><use href="#i-plus"/></svg><span data-i18n="gallery.add">Yuklash</span>
+          </button>
+        </div>
+        <div id="galleryContainer" class="gallery-grid"></div>
+      </section>
+
+    </main>
+  </div>
+
+  <nav id="bottomNav" class="bottom-nav" data-i18n-aria="nav.main" aria-label="Asosiy menyu"></nav>
+</div>
+
+<div id="toastRoot" class="toast-root"></div>
+
+<script type="module" src="js/main.js"></script>
+
+</body>
+
+</html>
