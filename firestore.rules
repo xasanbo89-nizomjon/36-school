@@ -1,0 +1,154 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    /* =========================
+       YORDAMCHI FUNKSIYALAR
+       Rol har doim users/{uid} hujjatidan olinadi (hujjat ID = Auth uid).
+       Hujjat yo'q yoki rol noma'lum bo'lsa — "guest": hech narsa qila olmaydi.
+       ========================= */
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function userPath(uid) {
+      return /databases/$(database)/documents/users/$(uid);
+    }
+
+    function role() {
+      return signedIn() && exists(userPath(request.auth.uid))
+        ? get(userPath(request.auth.uid)).data.get('role', 'guest')
+        : 'guest';
+    }
+
+    function knownRole() {
+      return role() in ['superadmin', 'director', 'deputy', 'teacher', 'student', 'parent'];
+    }
+
+    function isSuperadmin() {
+      return role() == 'superadmin';
+    }
+
+    function isAdmin() {
+      return role() in ['superadmin', 'director'];
+    }
+
+    function isManagement() {
+      return role() in ['superadmin', 'director', 'deputy'];
+    }
+
+    function isStaff() {
+      return role() in ['superadmin', 'director', 'deputy', 'teacher'];
+    }
+
+    function isOwnCreate() {
+      return request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.createdAt == request.time;
+    }
+
+    /* =========================
+       USERS
+       - o'z hujjatini o'qiy oladi
+       - ro'yxatni faqat superadmin/director/deputy ko'ra oladi
+       - yozish/o'chirish FAQAT superadmin (hech kim o'z rolini o'zgartira olmaydi)
+       ========================= */
+
+    match /users/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isManagement());
+      allow list: if isManagement();
+      allow create, update, delete: if isSuperadmin();
+    }
+
+    /* =========================
+       CLASSES
+       o'qish: har qanday rolli foydalanuvchi; yozish/o'chirish: superadmin, director
+       ========================= */
+
+    function validClass(data) {
+      return data.keys().hasOnly(['name', 'teacher', 'students', 'createdBy', 'createdAt'])
+        && data.keys().hasAll(['name', 'students'])
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 60
+        && (!('teacher' in data) || (data.teacher is string && data.teacher.size() <= 80))
+        && data.students is int && data.students >= 0 && data.students <= 5000;
+    }
+
+    match /classes/{id} {
+      allow read: if knownRole();
+      allow create: if isAdmin() && validClass(request.resource.data) && isOwnCreate();
+      allow update: if isAdmin() && validClass(request.resource.data)
+        && request.resource.data.createdBy == resource.data.createdBy;
+      allow delete: if isAdmin();
+    }
+
+    /* =========================
+       ATTENDANCE
+       o'qish: har qanday rolli; yozish: superadmin, director, deputy, teacher
+       o'zgartirish/o'chirish: superadmin, director, deputy
+       ========================= */
+
+    function validAttendance(data) {
+      return data.keys().hasOnly(['className', 'percent', 'createdBy', 'createdAt'])
+        && data.keys().hasAll(['className', 'percent'])
+        && data.className is string && data.className.size() > 0 && data.className.size() <= 60
+        && data.percent is number && data.percent >= 0 && data.percent <= 100;
+    }
+
+    match /attendance/{id} {
+      allow read: if knownRole();
+      allow create: if isStaff() && validAttendance(request.resource.data) && isOwnCreate();
+      allow update: if isManagement() && validAttendance(request.resource.data)
+        && request.resource.data.createdBy == resource.data.createdBy;
+      allow delete: if isManagement();
+    }
+
+    /* =========================
+       HOMEWORK
+       o'qish: har qanday rolli; yaratish: superadmin, deputy, teacher
+       o'chirish: superadmin, director, deputy yoki o'qituvchi (faqat o'zi qo'shganini)
+       ========================= */
+
+    function validHomework(data) {
+      return data.keys().hasOnly(['title', 'className', 'createdBy', 'createdAt'])
+        && data.keys().hasAll(['title'])
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 200
+        && (!('className' in data) || (data.className is string && data.className.size() <= 60));
+    }
+
+    match /homework/{id} {
+      allow read: if knownRole();
+      allow create: if role() in ['superadmin', 'deputy', 'teacher']
+        && validHomework(request.resource.data) && isOwnCreate();
+      allow update: if (isManagement() || (role() == 'teacher' && resource.data.createdBy == request.auth.uid))
+        && validHomework(request.resource.data)
+        && request.resource.data.createdBy == resource.data.createdBy;
+      allow delete: if isManagement()
+        || (role() == 'teacher' && resource.data.createdBy == request.auth.uid);
+    }
+
+    /* =========================
+       GALLERY
+       o'qish: har qanday rolli; yozish/o'chirish: superadmin, director
+       rasm manzili faqat https://
+       ========================= */
+
+    function validGallery(data) {
+      return data.keys().hasOnly(['title', 'image', 'createdBy', 'createdAt'])
+        && data.keys().hasAll(['title', 'image'])
+        && data.title is string && data.title.size() > 0 && data.title.size() <= 100
+        && data.image is string && data.image.size() <= 2000
+        && data.image.matches('^https://.+');
+    }
+
+    match /gallery/{id} {
+      allow read: if knownRole();
+      allow create: if isAdmin() && validGallery(request.resource.data) && isOwnCreate();
+      allow update: if isAdmin() && validGallery(request.resource.data)
+        && request.resource.data.createdBy == resource.data.createdBy;
+      allow delete: if isAdmin();
+    }
+
+    /* Boshqa hamma narsa — taqiqlangan (default deny) */
+  }
+}
